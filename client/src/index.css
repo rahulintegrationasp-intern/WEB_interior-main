@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --studio-bg: #140904;
+  --studio-surface: #1d0e07;
+  --studio-elevated: #26130a;
+  --studio-amber: #c87d3b;
+  --studio-copper: #d49b6a;
+  --studio-cream: #f4ece4;
+  --studio-muted: #b8a394;
+  --studio-subtle: #8a7263;
+  --studio-border: rgba(212, 155, 106, 0.2);
+  --studio-border-strong: rgba(212, 155, 106, 0.45);
+}
+
+@layer base {
+  html {
+    background-color: var(--studio-bg);
+    color: var(--studio-cream);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  body {
+    background-color: var(--studio-bg);
+    color: var(--studio-cream);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
+    font-family: "Cormorant Garamond", Georgia, serif;
+  }
+}
+
+@layer components {
+  .studio-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-studio-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-[#D49B6A]/45 bg-transparent px-6 py-2.5 text-xs sm:text-sm font-medium tracking-widest uppercase text-[#F4ECE4] transition-all duration-300 hover:border-[#D49B6A] hover:bg-[#D49B6A]/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D49B6A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#140904] disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-studio-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-[#C87D3B] bg-[#C87D3B] px-6 py-2.5 text-xs sm:text-sm font-semibold tracking-widest uppercase text-[#140904] transition-all duration-300 hover:bg-[#D49B6A] hover:border-[#D49B6A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4ECE4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#140904] disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .card-studio {
+    @apply rounded-xl border border-[#D49B6A]/20 bg-[#1D0E07]/90 shadow-studio-sm transition-all duration-300;
+  }
+
+  .input-studio {
+    @apply w-full rounded-lg border border-[#D49B6A]/25 bg-[#140904]/90 px-4 py-3 text-sm text-[#F4ECE4] placeholder-[#8A7263] transition-colors duration-200 focus:border-[#D49B6A] focus:outline-none focus:ring-1 focus:ring-[#D49B6A];
+  }
+
+  .label-studio {
+    @apply block text-xs font-medium uppercase tracking-wider text-[#B8A394] mb-2;
+  }
+
+  .section-eyebrow {
+    @apply text-xs uppercase tracking-[0.22em] text-[#D49B6A] font-medium mb-2 block;
+  }
+
+  .section-heading {
+    @apply font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-wide text-[#F4ECE4] leading-tight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
