@@ -7,8 +7,9 @@ const bodyParser = require('body-parser');
 
 const cloudinary = require('cloudinary').v2;
 
-const projectRoutes = require('./routes/project')
+const projectRoutes = require('./routes/project');
 const formRoutes = require('./routes/form');
+const authRoutes = require('./routes/auth');
 
 connection();
 
@@ -29,6 +30,7 @@ app.use(bodyParser.json());
 
 app.use("/api/project", projectRoutes);
 app.use("/api/form", formRoutes);
+app.use("/api/auth", authRoutes);
 
 const port = process.env.PORT || 8080;
 app.listen(port, console.log(`Server is running on port ${port}...`));

@@ -9,19 +9,29 @@ const Authentication = () => {
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (
-      email.trim() === "integrationaspservices@gmail.com" &&
-      password === "Integration@2003"
-    ) {
-      try {
-        sessionStorage.setItem("pp_admin_authenticated", "true");
-      } catch {
-        // Ignore storage restrictions
+    try {
+      const res = await fetch(
+        (import.meta.env.VITE_API_BASE_URL || "http://localhost:8080") +
+          "/api/auth/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email.trim(), password }),
+        }
+      );
+      if (res.ok) {
+        try {
+          sessionStorage.setItem("pp_admin_authenticated", "true");
+        } catch {
+          // Ignore storage restrictions
+        }
+        navigate("/dashboard");
+      } else {
+        setError(true);
       }
-      navigate("/dashboard");
-    } else {
+    } catch {
       setError(true);
     }
   };
