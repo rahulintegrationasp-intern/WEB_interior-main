@@ -1,0 +1,11 @@
+[build]
+  base = "client"
+  # Committed node_modules were installed on macOS; reinstall cleanly for Linux
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+# Serve the React app for all client-side routes (e.g. /portfolio, /contact)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
