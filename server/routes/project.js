@@ -41,9 +41,22 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB cap
 });
 
+const VALID_CATEGORIES = new Set(["Residential", "Commercial", "Hospitality"]);
+
 router.post("/", upload.single("pimg"), async (req, res) => {
   try {
     const { name, desc, cat, pimg } = req.body;
+
+    if (!name || typeof name !== "string" || name.trim().length === 0) {
+      return res.status(400).json({ error: "Project name is required" });
+    }
+    if (!desc || typeof desc !== "string" || desc.trim().length === 0) {
+      return res.status(400).json({ error: "Project description is required" });
+    }
+    if (!cat || !VALID_CATEGORIES.has(cat)) {
+      return res.status(400).json({ error: "Category must be Residential, Commercial, or Hospitality" });
+    }
+
     const imagePath = req.file && req.file.path ? req.file.path : pimg;
 
     if (!imagePath) {
@@ -51,8 +64,8 @@ router.post("/", upload.single("pimg"), async (req, res) => {
     }
 
     const newProject = new Project({
-      name,
-      desc,
+      name: name.trim(),
+      desc: desc.trim(),
       cat,
       pimg: imagePath,
     });
@@ -61,17 +74,21 @@ router.post("/", upload.single("pimg"), async (req, res) => {
     res.status(201).json(saved);
   } catch (error) {
     console.error("Project upload error:", error.message);
-    res.status(500).json({ error: "Could not save project", details: error.message });
+    res.status(500).json({ error: "Could not save project" });
   }
 });
 
 router.get('/', async (req, res) => {
   try {
     const { category } = req.query;
-    const filter =
-      category && category !== 'All'
-        ? { cat: new RegExp(`^${category}$`, 'i') }
-        : {};
+
+    let filter = {};
+    if (category && category !== 'All') {
+      // Escape regex special characters to prevent ReDoS
+      const escaped = category.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter = { cat: new RegExp(`^${escaped}$`, 'i') };
+    }
+
     const projects = await Project.find(filter);
     res.status(200).json(projects);
   } catch (error) {
@@ -97,6 +114,10 @@ router.patch('/:id', upload.single('pimg'), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, desc, cat } = req.body;
+
+    if (cat && !VALID_CATEGORIES.has(cat)) {
+      return res.status(400).json({ error: "Invalid category" });
+    }
 
     const project = await Project.findById(id);
 
