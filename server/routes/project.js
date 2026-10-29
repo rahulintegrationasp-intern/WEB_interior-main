@@ -7,16 +7,39 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
 const path = require('path');
 
+// Allowed MIME types for project images
+const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'uploads',
-    format: async (req, file) => 'png',
+    // Use the original detected format rather than blindly forcing 'png'
+    format: async (req, file) => {
+      const mime = file.mimetype || "";
+      if (mime === "image/jpeg") return "jpg";
+      if (mime === "image/webp") return "webp";
+      if (mime === "image/gif")  return "gif";
+      return "png"; // default / fallback
+    },
     public_id: (req, file) => Date.now() + path.extname(file.originalname),
   },
 });
 
-const upload = multer({ storage: storage });
+// Reject non-image files before they reach Cloudinary
+function imageFileFilter(req, file, cb) {
+  if (ALLOWED_MIME.has(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE", `Unsupported file type: ${file.mimetype}`));
+  }
+}
+
+const upload = multer({
+  storage,
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB cap
+});
 
 router.post("/", upload.single("pimg"), async (req, res) => {
   try {
