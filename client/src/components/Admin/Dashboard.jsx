@@ -7,6 +7,19 @@ import { ENDPOINTS } from "../../config/api";
 const Dashboard = () => {
   const navigate = useNavigate();
 
+  // ── Auth guard: redirect to login if not authenticated ───────────────────
+  useEffect(() => {
+    let authenticated = false;
+    try {
+      authenticated = sessionStorage.getItem("pp_admin_authenticated") === "true";
+    } catch {
+      // sessionStorage unavailable
+    }
+    if (!authenticated) {
+      navigate("/authentication", { replace: true });
+    }
+  }, [navigate]);
+
   // Add Project modal state
   const [isOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
